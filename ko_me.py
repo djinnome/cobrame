@@ -59,8 +59,9 @@ if __name__ == '__main__':
     start, stop  = args.start, args.stop
     if start > stop:
         start, stop = stop, start
- 
-    genes = [gene.strip() for gen in open(args.kofile).readlines()]
+    with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
+            me = pickle.load(f)
+    genes = get_genes( me )
     for gene in genes[start:stop]:
         
         with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
