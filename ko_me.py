@@ -55,10 +55,11 @@ if __name__ == '__main__':
     parser.add_argument('outdir', help='Output directory')
     parser.add_argument('start',type=int, help='Start Gene (0-based)')
     parser.add_argument('stop', type=int, help='End Gene (does not include this gene)')
+    args = parser.parse_args()
     start, stop  = args.start, args.stop
     if start > stop:
         start, stop = stop, start
-    args = parser.parse_args()
+ 
     genes = [gene.strip() for gen in open(args.kofile).readlines()]
     for gene in genes[start:stop]:
         
