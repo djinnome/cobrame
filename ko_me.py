@@ -46,7 +46,7 @@ def get_genes( me ):
             for rna_id in reaction.transcription_data.RNA_products:
                 locus_id = rna_id.replace("RNA_", "", 1)
                 loci.add( locus_id )
-    return loci
+    return sorted(loci)
 
 # In[ ]:
 if __name__ == '__main__':
