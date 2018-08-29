@@ -52,9 +52,16 @@ def get_genes( me ):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run COBRAME knockouts')
     parser.add_argument('kofile', type=argparse.FileType('r'))
-    parser.add_argument('outdir')
+    parser.add_argument('outdir', help='Output directory')
+    parser.add_argument('start',type=int, help='Start Gene (0-based)')
+    parser.add_argument('stop', type=int, help='End Gene (does not include this gene)')
+    start, stop  = args.start, args.stop
+    if start > stop:
+        start, stop = stop, start
     args = parser.parse_args()
-    for gene_id in open(args.kofile):
+    genes = [gene.strip() for gen in open(args.kofile).readlines()]
+    for gene in genes[start:stop]:
+        
         with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
             me = pickle.load(f)
             me.remove_genes_from_model( [gene_id] )
