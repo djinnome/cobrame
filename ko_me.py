@@ -58,6 +58,7 @@ if __name__ == '__main__':
     start, stop  = args.start, args.stop
     if start > stop:
         start, stop = stop, start
+    os.makedirs(args.outdir, exist_ok=True)
     with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
             me = pickle.load(f)
     genes = get_genes( me )
