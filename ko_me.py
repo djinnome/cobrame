@@ -51,7 +51,6 @@ def get_genes( me ):
 # In[ ]:
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run COBRAME knockouts')
-    parser.add_argument('kofile', type=argparse.FileType('r'))
     parser.add_argument('outdir', help='Output directory')
     parser.add_argument('start',type=int, help='Start Gene (0-based)')
     parser.add_argument('stop', type=int, help='End Gene (does not include this gene)')
