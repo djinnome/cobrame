@@ -62,7 +62,7 @@ if __name__ == '__main__':
     with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
             me = pickle.load(f)
     genes = get_genes( me )
-    for gene in genes[start:stop]:
+    for gene_id in genes[start:stop]:
         
         with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
             me = pickle.load(f)
