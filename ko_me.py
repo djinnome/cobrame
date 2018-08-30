@@ -8,9 +8,57 @@ import os
 from cobrame.core.reaction import MetabolicReaction, TranscriptionReaction, TranslationReaction
 import pandas as pd
 
+import json
+import ecolime
+from cobrame.core.reaction import TranscriptionReaction
+from qminospy.me1 import ME_NLP1
 
-with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
-    me = pickle.load(f)
+def compute_gene_essentiality_at_growth_rate(me, gr, out_location, start, stop):
+    """Thanks to Colton Lloyd for this function: https://github.com/SBRG/cobrame/issues/29#issuecomment-417487803"""
+    me_nlp = ME_NLP1(me, growth_key='mu')
+    expressions = me_nlp.compile_expressions()
+    me_nlp.compiled_expressions = expressions
+
+    hs = None
+
+    all_genes = sorted(me.metabolites.query(re.compile("^RNA_b[0-9]"),
+                                            key=lambda gene: gene.id)
+
+    results = {}
+    for gene_RNA in all_genes[start:stop]
+
+        default_bounds = {}
+        for r in gene_RNA.reactions:
+            if not r.id.startswith("DM") and not \
+                    isinstance(r, TranscriptionReaction):
+                default_bounds[r] = (r.lower_bound, r.upper_bound)
+                r.knock_out()
+        x, status, hs = me_nlp.solvelp(gr, basis=hs)
+
+        if status == 'optimal':
+            results[gene_RNA.id] = 'NONESSENTIAL'
+            print("Biomass dilution for {} KO: {} ".format(gene_RNA.id,  me.solution.x_dict['biomass_dilution']))
+            metabolic_fluxes = pd.DataFrame({'MetabolicFlux': me.get_metabolic_flux()})
+            expression_fluxes = pd.DataFrame({'TranscriptionFlux': me.get_transcription_flux(),
+                                        'TranslationFlux': me.get_translation_flux()})
+            metabolic_fluxes.to_csv(os.path.join(out_location, 'MetabolicFlux.{}.csv'.format(gene_RNA.id)))
+            expression_fluxes.to_csv(os.path.join(out_location, 'ExpressionFlux.{}.csv'.format(gene_RNA.id))))
+        else:
+            results[gene_RNA.id] = 'ESSENTIAL'
+
+        print("%s\t%s" % (gene_RNA.id.split("_")[1], str(status)))
+
+        with open("%s/iJL1678b_essentiality_%.2f_gr_%d_%d.json" % (out_location, gr, start, stop),
+                  "w") as outfile:
+            json.dump(results, outfile, indent=True)
+
+        # Reset bounds
+        for r in default_bounds:
+            r.lower_bound = default_bounds[r][0]
+            r.upper_bound = default_bounds[r][1]
+
+            
+
     
 
 
@@ -72,34 +120,19 @@ def get_metabolic_rxns( me ):
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='run COBRAME knockouts')
     parser.add_argument('outdir', help='Output directory')
-    parser.add_argument('ko', choices=['metabolic_rxns','all_rxns', 'transcription_rxns', 'translation_rxns','gene'])
+    #parser.add_argument('ko', choices=['metabolic_rxns','all_rxns', 'transcription_rxns', 'translation_rxns','gene'])
     parser.add_argument('start',type=int, help='Start Gene (0-based)')
     parser.add_argument('stop', type=int, help='End Gene (does not include this gene)')
+    parser.add_argument('growth_rate', type=float, help='Growth rate to consider essential')
     args = parser.parse_args()
     start, stop  = args.start, args.stop
     if start > stop:
         start, stop = stop, start
     os.makedirs(args.outdir, exist_ok=True)
     with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
-            me = pickle.load(f)
-    if args.ko == 'gene':
-        kos = get_genes( me )
-    elif args.ko == 'metabolic_rxns':
-        kos = get_metabolic_rxns( me )
-    for ko in kos[start:stop]:   
-        with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
-            me = pickle.load(f)
-            if args.ko == 'gene':
-                rxns = knock_out_genes_from_model( me, [ko] )
-            else:
-                rxns = knock_out_rxns_from_model( me, [ko] )
-            solve_me_model(me, 1., min_mu = .1, precision=1e-2, using_soplex=False)
-            print("Biomass dilution for {} KO: {} ".format(ko,  me.solution.x_dict['biomass_dilution']))
-            metabolic_fluxes = pd.DataFrame({'MetabolicFlux': me.get_metabolic_flux()})
-            expression_fluxes = pd.DataFrame({'TranscriptionFlux': me.get_transcription_flux(),
-                                        'TranslationFlux': me.get_translation_flux()})
-            metabolic_fluxes.to_csv(os.path.join(args.outdir, 'MetabolicFlux.{}.csv'.format(gene_id)))
-            expression_fluxes.to_csv(os.path.join(args.outdir('ExpressionFlux.{}.csv'.format(gene_id))))
+         me = pickle.load(f)
+    compute_gene_essentiality_at_growth_rate( me, args.growth_rate, args.outdir, start, stop )
+
             
 
 
