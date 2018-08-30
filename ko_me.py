@@ -6,7 +6,7 @@ import cobrame
 from cobrame.io.json import load_reduced_json_me_model, load_json_me_model
 import os
 from cobrame.core.reaction import MetabolicReaction, TranscriptionReaction, TranslationReaction
-# In[8]:
+import pandas as pd
 
 
 with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
