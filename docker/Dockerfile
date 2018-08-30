@@ -21,6 +21,7 @@ COPY nothing.txt soplex-$SOPLEX_VERSION.tg* /source/
 # Shadow allows use of useradd.
 ENV PACKAGES="\
 	shadow \
+	swig   \
 "
 RUN apk add --no-cache $PACKAGES
 
@@ -40,6 +41,13 @@ WORKDIR /home/$NB_USER
 
 RUN echo \
 	&& cd /source \
+	# Install glpk
+	&& git clone https://github.com/firedrakeproject/glpk.git \
+	&& cd /source/glpk \
+	&& ./configure \
+	&& make \
+	&& make install \
+	&& cd /source
 	# Install cobrapy version 0.5.11
 	&& git clone https://github.com/opencobra/cobrapy.git \
 	&& cd /source/cobrapy \
@@ -56,6 +64,7 @@ RUN echo \
 
     # Install remaining ME-model software. qMINOS/solvemepy is automatically
     # installed
+    && pip install optlang \
     && pip install escher \
     && cd /source \
 	&& git clone https://github.com/SBRG/cobrame.git \
