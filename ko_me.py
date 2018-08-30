@@ -54,7 +54,7 @@ def knock_out_reactions_from_model( me, rxn_list ):
         rxn = me.reactions.get_by_id( rxn_id )
         rxn.bounds = (0, 0)
         rxns.add( rxn )
-    return rxns
+    return sorted(rxns, key = lambda rxn: rxn.id)
 def knock_out_genes_from_model( me, gene_list ): 
     rxns = set()
     for gene in gene_list:
@@ -65,7 +65,7 @@ def knock_out_genes_from_model( me, gene_list ):
                 for rxn in cplx.metabolic_reactions:
                     rxn.bounds = (0,0)
                     rxns.add(rxn)
-    return sorted(rxns)
+    return sorted(rxns, key=lambda rxn: rxn.id)
 def get_metabolic_rxns( me ):
     return [rxn for rxn in me.reactions if isinstance(rxn, MetabolicReaction)]
 # In[ ]:
