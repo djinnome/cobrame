@@ -4,7 +4,9 @@ import argparse
 import pickle
 import cobrame
 from cobrame.io.json import load_reduced_json_me_model, load_json_me_model
-import os
+import os, re
+from os.path import abspath, dirname
+
 from cobrame.core.reaction import MetabolicReaction, TranscriptionReaction, TranslationReaction
 import pandas as pd
 
