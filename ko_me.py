@@ -37,11 +37,13 @@ def compute_gene_essentiality_at_growth_rate(me, gr, out_location, start, stop):
         if status == 'optimal':
             results[gene_RNA.id] = 'NONESSENTIAL'
             print("Biomass dilution for {} KO: {} ".format(gene_RNA.id,  me.solution.x_dict['biomass_dilution']))
-            metabolic_fluxes = pd.DataFrame({'MetabolicFlux': me.get_metabolic_flux()})
-            expression_fluxes = pd.DataFrame({'TranscriptionFlux': me.get_transcription_flux(),
-                                        'TranslationFlux': me.get_translation_flux()})
-            metabolic_fluxes.to_csv(os.path.join(out_location, 'MetabolicFlux.{}.csv'.format(gene_RNA.id)))
-            expression_fluxes.to_csv(os.path.join(out_location, 'ExpressionFlux.{}.csv'.format(gene_RNA.id))))
+            metabolic_fluxes = pd.DataFrame( {'MetabolicFlux': me.get_metabolic_flux() } )
+            expression_fluxes = pd.DataFrame( {'TranscriptionFlux': me.get_transcription_flux(),
+                                               'TranslationFlux': me.get_translation_flux() })
+            metabolic_fluxes.to_csv(  os.path.join( out_location,
+                                                    'MetabolicFlux.{}.csv'.format( gene_RNA.id )))
+            expression_fluxes.to_csv( os.path.join( out_location,
+                                                    'ExpressionFlux.{}.csv'.format(gene_RNA.id)))
         else:
             results[gene_RNA.id] = 'ESSENTIAL'
 
