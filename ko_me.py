@@ -84,9 +84,9 @@ if __name__ == '__main__':
             me = pickle.load(f)
     if args.ko == 'gene':
         kos = get_genes( me )
-    elif args.ko == 'metabolic_rxns':
+    else: args.ko == 'metabolic_rxns':
         kos = get_metabolic_rxns( me )
-     for ko in kos[start:stop]:   
+    for ko in kos[start:stop]:   
         with open('/home/meuser/me_models/iJL1678b.pickle', 'rb') as f:
             me = pickle.load(f)
             if args.ko == 'gene':
