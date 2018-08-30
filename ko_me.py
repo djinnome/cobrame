@@ -24,7 +24,7 @@ def compute_gene_essentiality_at_growth_rate(me, gr, out_location, start, stop):
     all_genes = sorted( me.metabolites.query( re.compile("^RNA_b[0-9]" )),
                         key=lambda gene: gene.id)
     results = {}
-    for gene_RNA in all_genes[start:stop]
+    for gene_RNA in all_genes[start:stop]:
 
         default_bounds = {}
         for r in gene_RNA.reactions:
